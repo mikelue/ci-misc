@@ -1,0 +1,30 @@
+---
+name: default
+on: [push]
+
+jobs:
+  test-scripts-for-maven:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Install bats(bash testing framework)
+        run: bats/install-bats.sh
+      - name: Run tests
+        run: |
+          ./show-dumpfiles.bats
+          ./sed-extract-code-coverage-jmockit.bats
+        working-directory: maven/test
+  test-scripts-for-aws:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Install bats(bash testing framework)
+        run: bats/install-bats.sh
+      - name: Run tests
+        run: |
+          ./login-aws-ecr.bats
+        working-directory: aws/test

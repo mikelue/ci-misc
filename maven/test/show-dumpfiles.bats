@@ -38,6 +38,7 @@ cd $BATS_TEST_DIRNAME
 }
 
 @test "No target folder" {
+    mkdir -p mvnprj-dump-empty
     run $testedScript mvnprj-dump-empty
 
     [ $status -eq 0 ]
