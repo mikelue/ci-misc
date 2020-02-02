@@ -12,9 +12,7 @@ jobs:
       - name: Install bats(bash testing framework)
         run: bats/install-bats.sh
       - name: Run tests
-        run: |
-          ./show-dumpfiles.bats
-          ./sed-extract-code-coverage-jmockit.bats
+        run: $GITHUB_WORKSPACE/bats/run-bats.sh .
         working-directory: maven/test
   test-scripts-for-aws:
     runs-on: ubuntu-latest
@@ -25,6 +23,5 @@ jobs:
       - name: Install bats(bash testing framework)
         run: bats/install-bats.sh
       - name: Run tests
-        run: |
-          ./login-aws-ecr.bats
+        run: $GITHUB_WORKSPACE/bats/run-bats.sh .
         working-directory: aws/test
