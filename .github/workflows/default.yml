@@ -3,7 +3,8 @@ name: default
 on: [push]
 
 jobs:
-  test-scripts-for-maven:
+  scripts-for-maven:
+    name: Test scripts for Maven
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,7 +15,8 @@ jobs:
       - name: Run tests
         run: $GITHUB_WORKSPACE/bats/run-bats.sh .
         working-directory: maven/test
-  test-scripts-for-aws:
+  scripts-for-aws:
+    name: Test scripts for AWS
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,3 +27,17 @@ jobs:
       - name: Run tests
         run: $GITHUB_WORKSPACE/bats/run-bats.sh .
         working-directory: aws/test
+  scripts-for-docker:
+    name: Test scripts for Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Install bats(bash testing framework)
+        run: bats/install-bats.sh
+      - name: Run tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: $GITHUB_WORKSPACE/bats/run-bats.sh .
+        working-directory: docker/test

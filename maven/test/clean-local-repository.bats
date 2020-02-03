@@ -13,10 +13,17 @@ touch_file()
 	touch -d "@$unix_time" $file_path
 }
 
+@test "Empty argument" {
+	run $testedScript
+
+	[ $status -eq 1 ]
+	grep -s "Usage" <<<"$output"
+}
+
 @test "No local repository" {
 	run $testedScript no-such-folder
 
-	grep "No repository folder" <<<"$output"
+	grep -s "No repository folder" <<<"$output"
 }
 
 @test "Clean out dated artifacts(90 days)" {
@@ -51,5 +58,5 @@ touch_file()
 	[[ -f $new_file_1 ]]
 
 	# Checks the output
-	grep -F "Remove [3] folders" <<<"$output"
+	grep -sF "Remove [3] folders" <<<"$output"
 }
