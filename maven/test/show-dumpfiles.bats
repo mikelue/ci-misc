@@ -8,8 +8,7 @@ cd $BATS_TEST_DIRNAME
     run $testedScript
 
     [ $status -eq 1 ]
-
-    grep "Needs \"\$1\" arguments" <<<"$output"
+    grep -q "Usage" <<<"$output"
 }
 
 @test "Error case: Non-existing folder" {
@@ -17,7 +16,7 @@ cd $BATS_TEST_DIRNAME
 
     [ $status -eq 1 ]
 
-    grep "Non-existing folder" <<<"$output"
+    grep -q "Non-existing folder" <<<"$output"
 }
 
 @test "Show file names" {
@@ -25,8 +24,8 @@ cd $BATS_TEST_DIRNAME
 
     [ $status -eq 0 ]
 
-    [[ $(grep -F "Dump file[surefire]" <<<"$output" | wc -l) -eq 2 ]]
-    [[ $(grep -F "Dump file[failsafe]" <<<"$output" | wc -l) -eq 2 ]]
+    [ $(grep -F "Dump file[surefire]" <<<"$output" | wc -l) -eq 2 ]
+    [ $(grep -F "Dump file[failsafe]" <<<"$output" | wc -l) -eq 2 ]
 }
 
 @test "Show file contents" {
@@ -34,7 +33,7 @@ cd $BATS_TEST_DIRNAME
 
     [ $status -eq 0 ]
 
-    [[ $(grep -F "dump content" <<<"$output" | wc -l) -eq 4 ]]
+    [ $(grep -F "dump content" <<<"$output" | wc -l) -eq 4 ]
 }
 
 @test "No target folder" {
@@ -43,5 +42,5 @@ cd $BATS_TEST_DIRNAME
 
     [ $status -eq 0 ]
 
-    [[ $(grep -F "Dump file" <<<"$output" | wc -l) -eq 0 ]]
+    [ $(grep -F "Dump file" <<<"$output" | wc -l) -eq 0 ]
 }
