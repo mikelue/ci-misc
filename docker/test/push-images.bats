@@ -57,3 +57,10 @@ build_images()
 	[ $status -eq 0 ]
 	grep -q 'Pushing image is a success' <<<"$output"
 }
+
+@test "Push images with error" {
+	run $testedScript -d "--no-such-option" \
+		no-such-name/push-test-image latest test-case
+
+	[ $status -eq 1 ]
+}

@@ -86,5 +86,6 @@ printf "Building image by directory \"%s\":\n\t%s\n" "$docker_dir" "$tagging"
 if eval docker build --quiet $docker_options $cache_from $tagging "$docker_dir"; then
 	echo "Building image is a success."
 else
-    echo "Pushing image has failed."
+	echo "Building image has failed."
+	exit 1
 fi

@@ -5,42 +5,42 @@ testedScript="$BATS_TEST_DIRNAME/../show-dumpfiles.sh"
 cd $BATS_TEST_DIRNAME
 
 @test "Error case: Missed argument \$1" {
-    run $testedScript
+	run $testedScript
 
-    [ $status -eq 1 ]
-    grep -q "Usage" <<<"$output"
+	[ $status -eq 1 ]
+	grep -q "Usage" <<<"$output"
 }
 
 @test "Error case: Non-existing folder" {
-    run $testedScript no-such-folder
+	run $testedScript no-such-folder
 
-    [ $status -eq 1 ]
+	[ $status -eq 1 ]
 
-    grep -q "Non-existing folder" <<<"$output"
+	grep -q "Non-existing folder" <<<"$output"
 }
 
 @test "Show file names" {
-    run $testedScript mvnprj-dump
+	run $testedScript mvnprj-dump
 
-    [ $status -eq 0 ]
+	[ $status -eq 0 ]
 
-    [ $(grep -F "Dump file[surefire]" <<<"$output" | wc -l) -eq 2 ]
-    [ $(grep -F "Dump file[failsafe]" <<<"$output" | wc -l) -eq 2 ]
+	[ $(grep -F "Dump file[surefire]" <<<"$output" | wc -l) -eq 2 ]
+	[ $(grep -F "Dump file[failsafe]" <<<"$output" | wc -l) -eq 2 ]
 }
 
 @test "Show file contents" {
-    run $testedScript mvnprj-dump
+	run $testedScript mvnprj-dump
 
-    [ $status -eq 0 ]
+	[ $status -eq 0 ]
 
-    [ $(grep -F "dump content" <<<"$output" | wc -l) -eq 4 ]
+	[ $(grep -F "dump content" <<<"$output" | wc -l) -eq 4 ]
 }
 
 @test "No target folder" {
-    mkdir -p mvnprj-dump-empty
-    run $testedScript mvnprj-dump-empty
+	mkdir -p mvnprj-dump-empty
+	run $testedScript mvnprj-dump-empty
 
-    [ $status -eq 0 ]
+	[ $status -eq 0 ]
 
-    [ $(grep -F "Dump file" <<<"$output" | wc -l) -eq 0 ]
+	[ $(grep -F "Dump file" <<<"$output" | wc -l) -eq 0 ]
 }
