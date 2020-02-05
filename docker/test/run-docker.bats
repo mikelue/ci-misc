@@ -8,24 +8,24 @@ output_result()
 } >&3
 
 @test "Missed value of \"-d\" option" {
-    run $testedScript -d
+	run $testedScript -d
 
-    [ $status -eq 1 ]
-    grep -q "Usage" <<<"$output"
+	[ $status -eq 1 ]
+	grep -q "Usage" <<<"$output"
 }
 @test "Missed arguments" {
-    run $testedScript
+	run $testedScript
 
-    [ $status -eq 1 ]
-    grep -q "Usage" <<<"$output"
+	[ $status -eq 1 ]
+	grep -q "Usage" <<<"$output"
 }
 @test "Run hello world" {
-    workdir="$BATS_TMPDIR/run-docker.workdir"
+	workdir="$BATS_TMPDIR/run-docker.workdir"
 
-    run $testedScript hello-world:linux $workdir
+	run $testedScript hello-world:linux $workdir
 
-    output_result "$output"
-    [ $status -eq 0 ]
-    grep -Fq "Running docker[hello-world:linux]" <<<"$output"
-    grep -q "Hello from Docker" <<<"$output"
+	output_result "$output"
+	[ $status -eq 0 ]
+	grep -Fq "Running docker[hello-world:linux]" <<<"$output"
+	grep -q "Hello from Docker" <<<"$output"
 }

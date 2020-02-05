@@ -4,13 +4,13 @@ set -eu
 
 check_env()
 {
-    var_name="$1"
-    var_value=$(eval echo $var_name)
+	var_name="$1"
+	var_value=$(eval echo $var_name)
 
-    if [ -z "$var_value" ]; then
-        >&2 echo "Needs \"$var_name\""
-        exit 1
-    fi
+	if [ -z "$var_value" ]; then
+		>&2 echo "Needs \"$var_name\""
+		exit 1
+	fi
 }
 
 
@@ -38,17 +38,17 @@ aws_profile=${2:-ci-user}
 
 check_result=0
 if ! check_env "\$AWS_ACCESS_ID"; then
-    check_result=1
+	check_result=1
 fi
 if ! check_env "\$AWS_SECRET_ACCESS_KEY"; then
-    check_result=1
+	check_result=1
 fi
 if ! check_env "\$AWS_REGION"; then
-    check_result=1
+	check_result=1
 fi
 
 if [ $check_result -ne 0 ]; then
-    exit $check_result
+	exit $check_result
 fi
 
 echo "Set-up access profile[$aws_profile]"

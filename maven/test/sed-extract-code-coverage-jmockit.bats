@@ -3,7 +3,7 @@
 cd $BATS_TEST_DIRNAME
 
 @test "Extract code coverage" {
-    run sed -nEf ../extract-code-coverage-jmockit.sed mvnprj-code-coverage/target/coverage-report/index.html
+	run sed -nEf ../extract-code-coverage-jmockit.sed mvnprj-code-coverage/target/coverage-report/index.html
 
-    [ "$output" = "Code coverage: 90.23%" ]
+	[ "$output" = "Code coverage: 90.23%" ]
 }
