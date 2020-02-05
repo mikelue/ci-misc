@@ -55,11 +55,15 @@ if [ -n "$repos_username" ]; then
 	echo $repos_token | docker login -u "$repos_username" --password-stdin "$repos_host_name"
 fi
 
+exit_status=0
 for tag in "$@"; do
 	echo "Pushing image: \"$image_name:$tag\""
 	if eval docker push $docker_options \"$image_name:$tag\"; then
 		echo "Pushing image is a success."
 	else
 		echo "Pushing image has failed."
+		exit_status=1
 	fi
 done
+
+exit $exit_status

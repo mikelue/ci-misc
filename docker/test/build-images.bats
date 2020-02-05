@@ -40,6 +40,11 @@ github_docker_registry="docker.pkg.github.com/mikelue/ci-misc"
 	grep -q -Fe "<repository>" <<<"$output"
 }
 
+@test "Build image with error" {
+	run $testedScript -d "--no-such-option" sample-docker-1 docker.sample.test/case1
+	[ $status -eq 1 ]
+}
+
 @test "Build sample docker image(no cache)" {
 	if [[ -z "$GITHUB_ACTION" ]]; then
 		skip "Not in environment of github.com actions"
