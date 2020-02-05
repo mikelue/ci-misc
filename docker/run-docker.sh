@@ -30,4 +30,5 @@ image=$1
 mount_work_directory="$2"
 shift 2
 
+printf "Running docker[%s] for command \"%s\". Workdir(host): \"%s\"\n" "$image" "$*" "$mount_work_directory"
 docker run $docker_options --rm --volume "$mount_work_directory:/workdir" --workdir=/workdir "$image" "$@"

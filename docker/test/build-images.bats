@@ -13,7 +13,7 @@ run_image_and_assert()
 output_result()
 {
 	echo -e "\n[OUTPUT] build-images.sh >>>>>\n$1\n<<<<<\n"
-} 1>&3 2>&3
+} >&3
 
 testedScript="$BATS_TEST_DIRNAME/../build-images.sh"
 github_docker_registry="docker.pkg.github.com/mikelue/ci-misc"

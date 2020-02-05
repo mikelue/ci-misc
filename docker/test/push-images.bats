@@ -2,8 +2,8 @@
 
 output_result()
 {
-	>&3 echo -e "\n[OUTPUT] push-images.sh >>>>>\n$1\n<<<<<\n"
-}
+	echo -e "\n[OUTPUT] push-images.sh >>>>>\n$1\n<<<<<\n"
+} >&3
 
 testedScript="$BATS_TEST_DIRNAME/../push-images.sh"
 buildScript="$BATS_TEST_DIRNAME/../build-images.sh"
@@ -55,6 +55,5 @@ build_images()
 	output_result "$output"
 
 	[ $status -eq 0 ]
-	grep 'Push image ".\+:latest" is a success' <<<"$output"
-	grep 'Push image ".\+:test-case" is a success' <<<"$output"
+	grep -q 'Pushing image is a success' <<<"$output"
 }
