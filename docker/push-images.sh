@@ -16,7 +16,7 @@ repos_username=${PUSH_REPOS_USERNAME:-}
 repos_token=${PUSH_REPOS_PASSWORD:-}
 docker_options=
 
-while getopts ":t:u:p:d:c" options; do
+while getopts ":u:p:d:" options; do
 	case "${options}" in
 		u)
 		repos_username=${OPTARG}
@@ -48,7 +48,7 @@ fi
 image_name="$1"
 shift
 
-if [ -n $repos_username ]; then
+if [ -n "$repos_username" ]; then
 	repos_host_name=$(echo "$image_name" | sed -re 's#^([^/]+).*$#\1#')
 
 	echo Log-in to \"$repos_host_name\"
