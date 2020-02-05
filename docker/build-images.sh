@@ -82,6 +82,9 @@ for repos in "$@"; do
 	tagging="$tagging -t '$repos:latest' -t '$repos:$image_tag'"
 done
 
+printf "Building image by directory \"%s\":\n\t%s\n" "$docker_dir" "$tagging"
 if eval docker build --quiet $docker_options $cache_from $tagging "$docker_dir"; then
-	echo Building image from \"$docker_dir\" is a success.
+	echo "Building image is a success."
+else
+    echo "Pushing image has failed."
 fi
