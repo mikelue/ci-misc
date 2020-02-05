@@ -2,8 +2,8 @@
 set -eu
 
 if command -v bats >/dev/null 2>&1; then
-    echo "bats is existing"
-    exit 0
+	echo "bats is existing"
+	exit 0
 fi
 
 echo "Installing bats"

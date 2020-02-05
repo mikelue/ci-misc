@@ -56,10 +56,10 @@ if [ -n "$repos_username" ]; then
 fi
 
 for tag in "$@"; do
-    echo "Pushing image: \"$image_name:$tag\""
+	echo "Pushing image: \"$image_name:$tag\""
 	if eval docker push $docker_options \"$image_name:$tag\"; then
 		echo "Pushing image is a success."
-    else
+	else
 		echo "Pushing image has failed."
 	fi
 done
