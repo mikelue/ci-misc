@@ -12,10 +12,19 @@ Scripts for maven building
 
 Scripts for AWS
 
-`login-aws-ecr.sh` - [Logs-in](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html) to [AWS ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) by environments:
+`aws-ecr-get-login.sh` - [Logs-in](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html) to [AWS ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) by environments:
 - `AWS_ACCESS_ID`
-- `AWS_SECRET_ACCESS_KEY` - should be put in **secret value keeper** of CI services
+- `AWS_SECRET_ACCESS_KEY` - should be put in **keeper of secret values** of CI services
 - `AWS_REGION`
+
+This script removes `-e none` arguments to make `docker login` working for newer version.
+
+Example:
+```bash
+# 1. Sets-up environment variables
+# 2. Following code execute the output of aws-ecr-get-login.sh
+$(aws-ecr-get-login.sh)
+```
 
 ---
 
