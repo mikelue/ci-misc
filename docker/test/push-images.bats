@@ -1,39 +1,39 @@
 #!/usr/bin/env bats
 
-output_result()
-{
-	echo -e "\n[OUTPUT] push-images.sh >>>>>\n$1\n<<<<<\n"
-} >&3
-
 testedScript="$BATS_TEST_DIRNAME/../push-images.sh"
 buildScript="$BATS_TEST_DIRNAME/../build-images.sh"
 github_docker_registry="docker.pkg.github.com/mikelue/ci-misc"
 
-@test "Unknown options" {
+load "$BATS_TEST_DIRNAME/../../bats/lib.bash"
+
+@test "Illegal option" {
 	run $testedScript -z
-
-	[ $status -eq 1 ]
-	grep -e "Unknown options:" <<<"$output"
-	grep -e "-z" <<<"$output"
+	assert_status $status 1
+	assert_illegal_option "$output" -z
 }
 
-@test "Needs image name" {
+@test "No arg for options" {
+	run $testedScript -d
+	assert_usage $status "$output" -d
+
+	run $testedScript -u
+	assert_usage $status "$output" -u
+
+	run $testedScript -p
+	assert_usage $status "$output" -p
+}
+
+@test "Not enough arguments" {
 	run $testedScript
+	assert_usage $status "$output"
 
-	[ $status -eq 1 ]
-	grep -Fe "<image name>" <<<"$output"
-}
-
-@test "Needs tag" {
 	run $testedScript fake-image
-
-	[ $status -eq 1 ]
-	grep -Fe "<tag>" <<<"$output"
+	assert_usage $status "$output"
 }
 
 build_images()
 {
-	tag=$1
+	local tag=$1
 	shift
 	$buildScript -t $tag sample-docker-1 "$@"
 }
@@ -43,24 +43,18 @@ build_images()
 		skip "Not in environment of github.com actions"
 	fi
 
-	run build_images test-case $github_docker_registry/push-test-image
-	[ $status -eq 0 ]
-	run build_images test-case-2 $github_docker_registry/push-test-image
-	[ $status -eq 0 ]
+	local image_name="$github_docker_registry/push-test-image"
+
+	run build_images test-case "$image_name"
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
+	run build_images test-case-2 "$image_name"
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
 
 	run $testedScript \
-		-u mikelue -p $GITHUB_TOKEN \
-		$github_docker_registry/push-test-image \
+		-u mikelue -p "$GITHUB_TOKEN" \
+		"$image_name" \
 		latest test-case
-	output_result "$output"
 
-	[ $status -eq 0 ]
-	grep -q 'Pushing image is a success' <<<"$output"
-}
-
-@test "Push images with error" {
-	run $testedScript -d "--no-such-option" \
-		no-such-name/push-test-image latest test-case
-
-	[ $status -eq 1 ]
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
+	assert_text "$output" "Pushing image is a success"
 }

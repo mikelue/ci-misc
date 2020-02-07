@@ -9,6 +9,11 @@ docker_options=""
 use_cache=0
 cache_from=""
 
+usage()
+{
+	echo "Usage: build-images.sh [-d <docker options>] [-t <tag>] [-c] [-u <user>] [-p <token>]\n\t<building path> <repository> [repository ...]"
+} >&2
+
 pull_cache_image()
 {
 	if [ $use_cache -eq 0 ]; then
@@ -20,7 +25,7 @@ pull_cache_image()
 
 	if [ -n "$cache_repos_username" ]; then
 		echo Log-in to \"$cache_host_name\" for pull cache
-		echo $cache_repos_token | docker login -u "$cache_repos_username" --password-stdin "$cache_host_name"
+		docker login -u "$cache_repos_username" --password "$cache_repos_token" "$cache_host_name"
 	fi
 
 	cache_image="$first_image:latest"
@@ -33,11 +38,13 @@ pull_cache_image()
 		echo "WARNING: Cache image is not available."
 	fi
 
-	echo Log-out from \"$cache_host_name\"
-	docker logout "$cache_host_name"
+	if [ -n "$cache_repos_username" ]; then
+		echo Log-out from \"$cache_host_name\"
+		docker logout "$cache_host_name"
+	fi
 }
 
-while getopts ":t:u:p:d:c" options; do
+while getopts "t:u:p:d:c" options; do
 	case "${options}" in
 		t)
 		image_tag=${OPTARG}
@@ -55,20 +62,16 @@ while getopts ":t:u:p:d:c" options; do
 		use_cache=1
 		;;
 		\?)
-		>&2 echo "Unknown options: \"-$OPTARG\""
-		>&2 echo "Usage: build-images.sh <building path> <repository> [repository ...]"
+		usage
 		exit 1
 		;;
 	esac
 done
 
-shift $(($OPTIND - 1))
+shift $(($OPTIND-1))
 
-if [ $# -eq 0 ]; then
-	echo "Needs: build-images.sh <building path> <repository>"
-	exit 1
-elif [ $# -eq 1 ]; then
-	echo "Needs: build-images.sh $1 <repository>"
+if [ $# -lt 2 ]; then
+	usage
 	exit 1
 fi
 
