@@ -13,7 +13,7 @@ Scripts for maven building
 Scripts for AWS
 
 `aws-ecr-get-login.sh` - [Logs-in](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html) to [AWS ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) by environments:
-- `AWS_ACCESS_ID`
+- `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY` - should be put in **keeper of secret values** of CI services
 - `AWS_REGION`
 
@@ -26,14 +26,31 @@ Example:
 $(aws-ecr-get-login.sh)
 ```
 
+If the running context has `aws` command, this script uses it directly.
+Otherwise, this script uses docker image [mikesir87/aws-cli](https://hub.docker.com/r/mikesir87/aws-cli) to run aws command
+if the context has [Docker](https://docs.docker.com/) installed.
+
 ---
 
 [bats](bats/)
 
-Scripts for [bats](https://github.com/bats-core/bats-core)(test framework of Bash)
+Installs libraries for unit-testing on shell scripts(`/usr/local`)
 
-- `install-bats.sh` - Install bats on `/usr/local`(by [sudo](https://linux.die.net/man/8/sudo))
-- `run-bats.sh` - Run bats(with `--tap`) on some directory
+`install-bats.sh`
+
+Installs bats and other libraries for testing scripts:
+- [bats-core](https://github.com/bats-core/bats-core)
+- [capitalone/bash_shell_mock](https://github.com/capitalone/bash_shell_mock)
+
+In some environment, you should use `sudo` run this script.
+
+`run-bats.sh`
+
+```sh
+run-bats.sh <directory>
+```
+
+Run bats(with `--tap`) on `<directory>`
 
 ---
 

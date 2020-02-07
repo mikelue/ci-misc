@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+load "$BATS_TEST_DIRNAME/../../bats/lib.bash"
+
 run_image_and_assert()
 {
 	image=$1
@@ -7,42 +9,40 @@ run_image_and_assert()
 	echo "Tests image by running: \"$image\""
 	run docker run $image
 
-	[ $status -eq 0 ]
-	grep -q "sample-docker-1" <<<"$output"
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
+	assert_text "$output" "sample-docker-1"
 } 1>&3 2>&3
-output_result()
-{
-	echo -e "\n[OUTPUT] build-images.sh >>>>>\n$1\n<<<<<\n"
-} >&3
 
 testedScript="$BATS_TEST_DIRNAME/../build-images.sh"
 github_docker_registry="docker.pkg.github.com/mikelue/ci-misc"
 
-@test "Unknown options" {
+@test "Illegal option" {
 	run $testedScript -z
-
-	[ $status -eq 1 ]
-	grep -q -e "Unknown options:" <<<"$output"
-	grep -q -e "-z" <<<"$output"
+	assert_status $status 1
+	assert_illegal_option "$output" -z
 }
 
-@test "Needs building path" {
+@test "No arg for options" {
+	run $testedScript -t
+	assert_usage $status "$output" -t
+
+	run $testedScript -u
+	assert_usage $status "$output" -u
+
+	run $testedScript -p
+	assert_usage $status "$output" -p
+
+	run $testedScript -d
+	assert_usage $status "$output" -d
+}
+
+@test "Not enough arguments" {
 	run $testedScript
+	assert_usage $status "$output"
 
-	[ $status -eq 1 ]
-	grep -q -Fe "<building path>" <<<"$output"
-}
-
-@test "Needs repository" {
 	run $testedScript sample_folder
-
-	[ $status -eq 1 ]
-	grep -q -Fe "<repository>" <<<"$output"
-}
-
-@test "Build image with error" {
-	run $testedScript -d "--no-such-option" sample-docker-1 docker.sample.test/case1
-	[ $status -eq 1 ]
+	assert_status $status 1
+	assert_usage $status "$output"
 }
 
 @test "Build sample docker image(no cache)" {
@@ -52,8 +52,7 @@ github_docker_registry="docker.pkg.github.com/mikelue/ci-misc"
 
 	run $testedScript -t test-case sample-docker-1 docker.sample.test/case1 docker.sample2.test/case1
 
-	output_result "$output"
-	[ $status -eq 0 ]
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
 
 	# Asserts the built image
 	run_image_and_assert docker.sample.test/case1:latest
@@ -71,11 +70,10 @@ github_docker_registry="docker.pkg.github.com/mikelue/ci-misc"
 		-c -u mikelue -p "$GITHUB_TOKEN" \
 		-t test-case sample-docker-1 docker.pkg.github.com/mikelue/ci-misc/ci-nocache-image
 
-	output_result "$output"
-	[ $status -eq 0 ]
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
 
 	# Asserts the missed cache of image
-	grep -q "WARNING: Cache image is not available." <<<"$output"
+	assert_text "$output" "WARNING: Cache image is not available."
 
 	run_image_and_assert docker.pkg.github.com/mikelue/ci-misc/ci-nocache-image:latest
 	run_image_and_assert docker.pkg.github.com/mikelue/ci-misc/ci-nocache-image:test-case
@@ -106,17 +104,16 @@ build_and_push_cache()
 	fi
 
 	run build_and_push_cache
-	[ $status -eq 0 ]
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
 
 	run $testedScript \
 		-c -u mikelue -p "$GITHUB_TOKEN" \
 		-t test-case sample-docker-1 $github_docker_registry/ci-cache-image
 
-	output_result "$output"
-	[ $status -eq 0 ]
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
 
 	# Asserts the cache hit of image
-	grep -q "Cache image is viable" <<<"$output"
+	assert_text "$output" "Cache image is viable"
 
 	run_image_and_assert $github_docker_registry/ci-cache-image:latest
 	run_image_and_assert $github_docker_registry/ci-cache-image:test-case

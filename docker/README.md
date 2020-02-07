@@ -6,7 +6,7 @@ This directory contains scripts and docker files used in CI environment.
 
 `build-images.sh`
 
-This script builds image by tagging **`<image>:latest`** and **`<image>:<tag>`** for every argument of repositories.
+Builds image by tagging **`<image>:latest`** and **`<image>:<tag>`** for every argument of repositories.
 
 ```bash
 build-images.sh
@@ -36,7 +36,7 @@ Environment variables:
 
 `push-images.sh`
 
-This script push images for multiple tags of a image name
+Pushes images for multiple tags of a image name
 
 ```bash
 push-images.sh [-u <username>] [-p <password>]
@@ -61,13 +61,31 @@ Environment variables:
 ---
 
 `run-docker.sh`
-- Runs docker image with `--rm`
-- `<workdir>`(of host's volume) is mounted and as the `--workdir` of container instance.
+
+Runs docker image with some default arguments.
 
 ```bash
-run-docker.sh [-d <docker options>] <image name:tag> <work dir> [commands ...]
+run-docker.sh [-d <docker options>] [-w <workdir>] [-v] <image name:tag> [commands ...]
 ```
 
-Arguments:
+**Default arguments** applied to [docker run](https://docs.docker.com/engine/reference/run/):
+- `--rm --workdir /workdir`
+
+**Default work directory:**
+
+If `-w <workdir>`(of host's volume) is provided, it is mounted from the host's volume.
+
+**Arguments:**
 - `-d <options>`
 	Docker options fed to `docker run <options>`
+- `-w <workdir>`
+	The value is mounted as `-v <workdir>:/workdir`
+- `-v`
+	Verbose
+
+**Quoting:**
+
+You must nested-quoting arguments of command if it contains special character of [default IFS](https://bash.cyberciti.biz/guide/$IFS):
+```bash
+run-docker.sh alpine:latest sh -c "'echo Hello World'"
+```

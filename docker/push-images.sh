@@ -10,13 +10,19 @@ cleanup()
 	fi
 }
 
+usage()
+{
+	echo "Usage: "
+	echo "push-images.sh [-d <docker options>] [-u <user>] [-p <token>] <image> <tag> [tags ...]"
+} >&2
+
 trap cleanup EXIT
 
 repos_username=${PUSH_REPOS_USERNAME:-}
 repos_token=${PUSH_REPOS_PASSWORD:-}
 docker_options=
 
-while getopts ":u:p:d:" options; do
+while getopts "u:p:d:" options; do
 	case "${options}" in
 		u)
 		repos_username=${OPTARG}
@@ -28,8 +34,7 @@ while getopts ":u:p:d:" options; do
 		docker_options="${OPTARG}"
 		;;
 		\?)
-		>&2 echo "Unknown options: \"-$OPTARG\""
-		>&2 echo "Usage: push-images.sh <image name> <tag> [tag ...]"
+		usage
 		exit 1
 		;;
 	esac
@@ -37,11 +42,8 @@ done
 
 shift $(($OPTIND - 1))
 
-if [ $# -eq 0 ]; then
-	echo "Needs: push-images.sh <image name> <tag>"
-	exit 1
-elif [ $# -eq 1 ]; then
-	echo "Needs: push-images.sh $1 <tag>"
+if [ $# -lt 2 ]; then
+	usage
 	exit 1
 fi
 
@@ -52,7 +54,7 @@ if [ -n "$repos_username" ]; then
 	repos_host_name=$(echo "$image_name" | sed -re 's#^([^/]+).*$#\1#')
 
 	echo Log-in to \"$repos_host_name\"
-	echo $repos_token | docker login -u "$repos_username" --password-stdin "$repos_host_name"
+	echo "$repos_token" | docker login -u "$repos_username" --password-stdin "$repos_host_name"
 fi
 
 exit_status=0

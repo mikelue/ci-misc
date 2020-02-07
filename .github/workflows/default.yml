@@ -11,9 +11,9 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Install bats(bash testing framework)
-        run: bats/install-bats.sh
+        run: sudo bats/install-bats.sh
       - name: Run tests
-        run: $GITHUB_WORKSPACE/bats/run-bats.sh .
+        run: $GITHUB_WORKSPACE/bats/run-bats.sh ./
         working-directory: maven/test
   scripts-for-aws:
     name: Test scripts for AWS
@@ -23,9 +23,9 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Install bats(bash testing framework)
-        run: bats/install-bats.sh
+        run: sudo bats/install-bats.sh
       - name: Run tests
-        run: $GITHUB_WORKSPACE/bats/run-bats.sh .
+        run: $GITHUB_WORKSPACE/bats/run-bats.sh ./
         working-directory: aws/test
   scripts-for-docker:
     name: Test scripts for Docker
@@ -35,9 +35,9 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Install bats(bash testing framework)
-        run: bats/install-bats.sh
+        run: sudo bats/install-bats.sh
       - name: Run tests
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: $GITHUB_WORKSPACE/bats/run-bats.sh .
+          GITHUB_TOKEN: ${{ secrets.package_token }}
+        run: $GITHUB_WORKSPACE/bats/run-bats.sh ./
         working-directory: docker/test
