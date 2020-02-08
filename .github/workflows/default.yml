@@ -41,3 +41,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.package_token }}
         run: $GITHUB_WORKSPACE/bats/run-bats.sh ./
         working-directory: docker/test
+  dockerfile-cassandra-migrate:
+    name: Test Dockerfile(cassandra-migrate)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Build image
+        run: docker build -t cassandra-migrate:ci-local .
+        working-directory: docker/cassandra-migrate
+      - name: Run image
+        run: docker run --rm cassandra-migrate:ci-local

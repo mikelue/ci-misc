@@ -2,6 +2,10 @@ This directory contains scripts and docker files used in CI environment.
 
 ## Docker files
 
+[cassandra-migrate](./cassandra-migrate/)
+
+Base on [python:alpine](https://hub.docker.com/_/python), this image pre-installs [cassandra-migrate](https://github.com/Cobliteam/cassandra-migrate).
+
 ## Scripts
 
 `build-images.sh`
