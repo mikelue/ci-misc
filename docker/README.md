@@ -10,8 +10,7 @@ Builds image by tagging **`<image>:latest`** and **`<image>:<tag>`** for every a
 
 ```bash
 build-images.sh
-	[-c] [-u <username>] [-p <password>]
-	[-d 'docker options']
+	[-d 'docker options'] [-c <cache image>]
 	[-t tag] <building path> <repository> [repository...]
 ```
 
@@ -21,16 +20,8 @@ Arguments:
 - `-d <options>`
 	Docker options(for `docker build <options>`)
 	e.g., `-d '--build-arg v1=20'`
-- `-c`
-	If this argument is appeared in argument, the first <repository>:latest is tried to be pulled for cache
-- `-u <username>`
-	username for log-in to repository of cache
-- `-p <token>`
-	password(token) for log-in to repository of cache
-
-Environment variables:
-- `CACHE_REPOS_USERNAME` - Loaded by script, as same as `-u <username>`
-- `CACHE_REPOS_TOKEN` - Loaded by script, as same as `-p <token>`
+- `-c <cache image>`
+	Pulls the cache image and applies `--cache-from <cache image>` into `docker build` command
 
 ---
 
