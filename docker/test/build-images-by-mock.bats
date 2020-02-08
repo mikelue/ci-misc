@@ -41,27 +41,9 @@ fake_image="fake.repos/fake-image"
 		--type partial --match 'pull'
 	shellmock_expect docker \
 		--status 0 \
-		--type partial --match '--cache-from'
+		--type partial --match '--cache-from fake-cache:case1'
 
-	run $testedScript -c sample_folder $fake_image
-	eval $EVAL_OUTPUT_RESULT_IF_FAILED
-}
-
-@test "Applies docker cache(-c) with login to docker registry(-u, -p)" {
-	shellmock_expect docker \
-		--status 0 \
-		--type partial --match 'login -u user1 --password pass1'
-	shellmock_expect docker \
-		--status 0 \
-		--type partial --match 'logout'
-	shellmock_expect docker \
-		--status 0 \
-		--type partial --match 'pull'
-	shellmock_expect docker \
-		--status 0 \
-		--type partial --match '--cache-from'
-
-	run $testedScript -c -u user1 -p pass1 sample_folder $fake_image
+	run $testedScript -c "fake-cache:case1" sample_folder $fake_image
 	eval $EVAL_OUTPUT_RESULT_IF_FAILED
 }
 
