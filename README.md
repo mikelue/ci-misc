@@ -17,6 +17,10 @@ Scripts for AWS
 - `AWS_SECRET_ACCESS_KEY` - should be put in **keeper of secret values** of CI services
 - `AWS_REGION`
 
+```sh
+aws-ecr-get-login.sh [-a '<aws options>'] [aws profile]
+```
+
 This script removes `-e none` arguments to make `docker login` working for newer version.
 
 Example:
@@ -25,6 +29,8 @@ Example:
 # 2. Following code execute the output of aws-ecr-get-login.sh
 $(aws-ecr-get-login.sh)
 ```
+Arguments:
+`-a <options>` - Additionl options fed to `aws <options>`
 
 If the running context has `aws` command, this script uses it directly.
 Otherwise, this script uses docker image [mikesir87/aws-cli](https://hub.docker.com/r/mikesir87/aws-cli) to run aws command
