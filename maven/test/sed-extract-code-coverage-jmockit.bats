@@ -1,9 +1,25 @@
 #!/usr/bin/env bats
+load "$BATS_TEST_DIRNAME/../../bats/lib.bash"
 
-cd $BATS_TEST_DIRNAME
+testScript="$BATS_TEST_DIRNAME/../extract-code-coverage-jmockit.sh"
+
+@test "Usage" {
+    run $testScript
+
+	assert_status "$status" 1
+    assert_text "$output" "Usage"
+}
+
+@test "No existing of index.html" {
+    run $testScript mvnprj-noexists
+
+	assert_status "$status" 1
+    assert_text "$output" "Coverage file is not existing"
+}
 
 @test "Extract code coverage" {
-	run sed -nEf ../extract-code-coverage-jmockit.sed mvnprj-code-coverage/target/coverage-report/index.html
+    run $testScript "$BATS_TEST_DIRNAME/mvnprj-code-coverage"
 
-	[ "$output" = "Code coverage: 90.23%" ]
+	eval $EVAL_OUTPUT_RESULT_IF_FAILED
+    assert_text "$output" "Code coverage: 90.23%"
 }
